@@ -1,17 +1,16 @@
 #!/bin/sh
+SERVER_FILES='./src/Forum.java ./src/ForumImpl.java ./src/ForumServer.java'
+CLIENT_FILES='./src/Intervenant.java ./src/IntervenantDescriptor.java ./src/IntervenantImpl.java ./src/Irc.java ./src/IrcGui.java'
 
 # clean all classes in client and server directory
-rm src/server/*.class
-rm src/client/*.class
+rm src/*.class
 
-# compile all server classes
-javac -d ./src/server -classpath src/server src/server/*.java
+# compile server classes
+javac -d ./src -classpath src $SERVER_FILES
 
 # generate the sub for the server
-rmic -d ./src/server -classpath src/server Server
+rmic -d ./src/ -classpath src/ Server
 
 # The remote interface is needed to compile the client
-cp src/server/ServerItf.class ./src/client/
-javac -d ./src/client/ -classpath src/client src/client/*.java
-
-cp src/server/Server_Stub.class ./src/client/
+# cp src/ServerItf.class ./src
+javac -d ./src -classpath src $CLIENT_FILES
