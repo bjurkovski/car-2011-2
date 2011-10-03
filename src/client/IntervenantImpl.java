@@ -6,8 +6,8 @@ import java.rmi.server.*;
 
 
 /**
- * Cette classe défini le traitant de communication du programme client.
- * Elle est utilisée par les classes connectListener,writeListener,whoListener,leaveListener 
+ * Cette classe dÃ©fini le traitant de communication du programme client.
+ * Elle est utilisÃ©e par les classes connectListener,writeListener,whoListener,leaveListener 
  * du GUI pour effectuer les communications distante avec le forum.
 */
 public class IntervenantImpl {
@@ -16,13 +16,13 @@ public class IntervenantImpl {
   private static IrcGui gui;
   
   /**
-  * Référence distante vers un forum.
+  * RÃ©fÃ©rence distante vers un forum.
   */
   private static Forum forum=null; //ref vers forum   
   
   /**
- * Identification du client dans le forum. Cet identifiant est retourné 
- * lors de l'appel à la méthode enter sur le forum distant.
+ * Identification du client dans le forum. Cet identifiant est retournÃ© 
+ * lors de l'appel Ã  la mÃ©thode enter sur le forum distant.
  */
   private int id;
   
@@ -36,7 +36,7 @@ public class IntervenantImpl {
   private String prenom;
   
   /**
- * constructeur de la classe IntervenantImpl. Le nom et le prenom de l'intervenant sont passés
+ * constructeur de la classe IntervenantImpl. Le nom et le prenom de l'intervenant sont passÃ©s
  * en parametre du programme client (irc.java)
  * @param nom nom de l'intervenant
  * @param prenom prenom de l'intervenant
@@ -50,7 +50,7 @@ public class IntervenantImpl {
  
     
   /**
- * Fixe une reference directe vers le gui (IrcGui). Cette reference est utilisée 
+ * Fixe une reference directe vers le gui (IrcGui). Cette reference est utilisÃ©e 
  * par le traitant de communication pour imprimer des message de chat dans le gui 
  * via la methode print definie dans IrcGui.
  * @param gui le GUI
@@ -60,9 +60,9 @@ public class IntervenantImpl {
   }
   
   /**
- * Execute la methode enter sur le forum. Cette methode est appelé par le traitant 
- * writeListener défini dans IrcGui. Cette méthode doit utiliser un serveur de nom 
- * pour obtenir une référence distante vers le forum et exécuter la méthode enter 
+ * Execute la methode enter sur le forum. Cette methode est appelÃ© par le traitant 
+ * writeListener dÃ©fini dans IrcGui. Cette mÃ©thode doit utiliser un serveur de nom 
+ * pour obtenir une rÃ©fÃ©rence distante vers le forum et exÃ©cuter la mÃ©thode enter 
  * dessus.
  * @param forum_name nom du forum 
  */
@@ -73,10 +73,10 @@ public class IntervenantImpl {
 	
   
   /**
- * Execute la methode say sur le forum. Cette methode est appelé par le traitant 
- * writeListener défini dans IrcGui. Cette méthode doit utilise une référence distante 
- * vers le forum et exécuter la méthode say dessus.
- * @param msg message à envoyer aux intervenants enregistrer dans le forum. 
+ * Execute la methode say sur le forum. Cette methode est appelÃ© par le traitant 
+ * writeListener dÃ©fini dans IrcGui. Cette mÃ©thode doit utilise une rÃ©fÃ©rence distante 
+ * vers le forum et exÃ©cuter la mÃ©thode say dessus.
+ * @param msg message Ã  envoyer aux intervenants enregistrer dans le forum. 
  */
   public void say (String msg) throws Exception {
   	
@@ -85,10 +85,10 @@ public class IntervenantImpl {
   }
   
   /**
- * Cette methode est appelé par le forum pour imprimer un nouveau message de 
- * chat a l'intervenant. Cette impression est déléguée à la méthode print définie 
+ * Cette methode est appelÃ© par le forum pour imprimer un nouveau message de 
+ * chat a l'intervenant. Cette impression est dÃ©lÃ©guÃ©e Ã  la mÃ©thode print dÃ©finie 
  * dans IrcGui. 
- * @param msg nouveau message à imprimer dans le gui.
+ * @param msg nouveau message Ã  imprimer dans le gui.
  */
   public void listen (String msg) throws PreconditionException {
   	// TO DO
@@ -105,18 +105,18 @@ public class IntervenantImpl {
   } 
 
   /**
- * Execute la methode leave sur le forum. Cette methode est appelé par le traitant 
- * leaveListener défini dans IrcGui. Cette méthode doit utilise une référence distante 
- * vers le forum et exécuter la méthode leave dessus.
+ * Execute la methode leave sur le forum. Cette methode est appelÃ© par le traitant 
+ * leaveListener dÃ©fini dans IrcGui. Cette mÃ©thode doit utilise une rÃ©fÃ©rence distante 
+ * vers le forum et exÃ©cuter la mÃ©thode leave dessus.
  */
   public void leave() throws Exception {
 	// TO DO
   }
   
   /**
- * Execute la methode who sur le forum. Cette methode est appelé par le traitant 
- * whoListener défini dans IrcGui. Cette méthode doit utilise une référence distante 
- * vers le forum et exécuter la methode who dessus.
+ * Execute la methode who sur le forum. Cette methode est appelÃ© par le traitant 
+ * whoListener dÃ©fini dans IrcGui. Cette mÃ©thode doit utilise une rÃ©fÃ©rence distante 
+ * vers le forum et exÃ©cuter la methode who dessus.
  */
   public String who() throws Exception {
 	// TO DO

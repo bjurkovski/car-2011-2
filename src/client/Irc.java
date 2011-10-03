@@ -5,9 +5,9 @@ import java.lang.*;
 
 /**
 * Cette classe est la classe principale constituant le programme client.
-* Elle est composé d'une fonction main qui à pour rôle d'instancier 
-* l'interface graphique associée au client (IrcGui) ainsi qu'un objet 
-* gérant les communications avec le forum (IntervenantImpl).
+* Elle est composÃ© d'une fonction main qui Ã  pour rÃ´le d'instancier 
+* l'interface graphique associÃ©e au client (IrcGui) ainsi qu'un objet 
+* gÃ©rant les communications avec le forum (IntervenantImpl).
 * 
 */
 
