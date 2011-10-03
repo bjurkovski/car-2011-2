@@ -10,7 +10,8 @@ import java.rmi.server.*;
  * Elle est utilisée par les classes connectListener,writeListener,whoListener,leaveListener 
  * du GUI pour effectuer les communications distante avec le forum.
 */
-public class IntervenantImpl  //TO DO {
+public class IntervenantImpl {
+  //TO DO
  
   private static IrcGui gui;
   

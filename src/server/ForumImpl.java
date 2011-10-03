@@ -1,4 +1,3 @@
-
 import java.util.*;
 import java.io.*;
 import java.rmi.*;
@@ -6,10 +5,8 @@ import java.rmi.server.*;
 /**
  * classe représentant l'objet servant du forum 
  */
-public class ForumImpl // TO DO  {
-
-  
-
+public class ForumImpl {
+    // TO DO
     public ForumImpl() throws RemoteException {
      super();
     }
