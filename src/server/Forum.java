@@ -2,20 +2,20 @@ import java.rmi.*;
 
 public interface Forum extends Remote {
 	/**
- * Enregistre un intervanant dans la structure de mémoristion des intervenants. Cette méthode est
- * appelée par le traitant de communication du programme client (IntervenantImpl) 
+ * Enregistre un intervanant dans la structure de mÃ©moristion des intervenants. Cette mÃ©thode est
+ * appelÃ©e par le traitant de communication du programme client (IntervenantImpl) 
  * @param intervenant une reference distante vers l'intervenant
  * @param nom nom de l'intervenant
  * @param prenom prenom de l'intervenant
  * @return un identifiant interne representant l'intervenant 
- * dans la structure de mémoristion des intervenants
+ * dans la structure de mÃ©moristion des intervenants
  */
   public  HashMap enter (Intervenant intervenant, String prenom, String nom)throws RemoteException;
   
    /**
- * De-enregistre un intervanant dans la structure de mémoristion des intervenants. Cette méthode est
- * appelée par le traitant de communication du programme client (IntervenantImpl) 
- * @param id identification de l'intervenant retourne lors de l'appel à la methode enter.
+ * De-enregistre un intervanant dans la structure de mÃ©moristion des intervenants. Cette mÃ©thode est
+ * appelÃ©e par le traitant de communication du programme client (IntervenantImpl) 
+ * @param id identification de l'intervenant retourne lors de l'appel Ã  la methode enter.
  */
   public  void leave(int id) throws RemoteException;
   

@@ -9,7 +9,7 @@ import java.rmi.server.*;
 
 /**
  * Cette classe est la classe principale constituant le programme serveur de forum. 
- * Cette classe représente le serveur du forum. Elle initialise l'orb 
+ * Cette classe reprÃ©sente le serveur du forum. Elle initialise l'orb 
  * et l'objet servant du forum (ForumImpl).
  */
  
