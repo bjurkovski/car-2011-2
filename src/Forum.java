@@ -1,4 +1,5 @@
 import java.rmi.*;
+import java.util.HashMap;
 
 public interface Forum extends Remote {
 	/**

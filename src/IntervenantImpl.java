@@ -90,7 +90,7 @@ public class IntervenantImpl {
  * dans IrcGui. 
  * @param msg nouveau message à imprimer dans le gui.
  */
-  public void listen (String msg) throws PreconditionException {
+  public void listen (String msg) throws RemoteException {
   	// TO DO
   } 
   

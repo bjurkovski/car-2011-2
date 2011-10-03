@@ -5,7 +5,7 @@ import java.rmi.server.*;
 /**
  * classe représentant l'objet servant du forum 
  */
-public class ForumImpl {
+public class ForumImpl implements Forum {
     // TO DO
     public ForumImpl() throws RemoteException {
      super();
@@ -30,7 +30,7 @@ public class ForumImpl {
  * @return un identifiant interne representant l'intervenant 
  * dans la structure de mémoristion des intervenants
  */
-  public synchronized HashMap enter (Intervenant intervenant, String prenom, String nom)throws RemoteException;{
+  public synchronized HashMap enter (Intervenant intervenant, String prenom, String nom) throws RemoteException{
   	  	
   	// TO DO
   	return null; // CETTE LIGNE EST A CHANGER
@@ -41,7 +41,7 @@ public class ForumImpl {
  * appelée par le traitant de communication du programme client (IntervenantImpl) 
  * @param id identification de l'intervenant retourne lors de l'appel à la methode enter.
  */
-  public synchronized void leave(int id) throws RemoteException;{
+  public synchronized void leave(int id) throws RemoteException{
 	// TO DO
 		
   }

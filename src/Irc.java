@@ -19,7 +19,7 @@ public class Irc {
 	// TO DO !!!
         // create the GUI
         // instanciate the intervenant implementation
-                
+		System.out.println("Client running");
 	} catch (Exception e) {
           System.out.println("ERROR : " + e) ;
 	  e.printStackTrace(System.out);

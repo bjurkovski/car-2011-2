@@ -9,8 +9,8 @@ rm src/*.class
 javac -d ./src -classpath src $SERVER_FILES
 
 # generate the sub for the server
-rmic -d ./src/ -classpath src/ Server
+rmic -d ./src/ -classpath src/ ForumImpl
 
 # The remote interface is needed to compile the client
 # cp src/ServerItf.class ./src
-javac -d ./src -classpath src $CLIENT_FILES
+javac -Xlint -d ./src -classpath src $CLIENT_FILES
