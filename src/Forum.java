@@ -1,4 +1,5 @@
 import java.rmi.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public interface Forum extends Remote {
@@ -11,7 +12,7 @@ public interface Forum extends Remote {
  * @return un identifiant interne representant l'intervenant 
  * dans la structure de mémoristion des intervenants
  */
-  public  HashMap<Intervenant,IntervenantDescriptor> enter (Intervenant intervenant, String prenom, String nom)throws RemoteException;
+  public  ArrayList<Intervenant> enter (Intervenant intervenant, String prenom, String nom)throws RemoteException;
   
    /**
  * De-enregistre un intervanant dans la structure de mémoristion des intervenants. Cette méthode est

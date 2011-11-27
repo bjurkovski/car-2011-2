@@ -4,6 +4,8 @@
 import java.util.*;
 import java.io.*;
 import java.rmi.*;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.*;
 
 
@@ -23,8 +25,13 @@ public class ForumServer {
 
 
    try {	
-   	// TO DO
-
+	   int port = Integer.parseInt(args[1]);
+	   Forum forum = new ForumImpl();
+       Forum stub = (Forum) UnicastRemoteObject.exportObject(forum, port);
+       Registry registry = LocateRegistry.createRegistry(port);
+       //Registry registry = LocateRegistry.getRegistry();
+       registry.rebind(args[0], stub);
+       System.out.println("Forum '" + args[0] + "' running on port " + port + "!");
    } catch(Exception ex) {
  		ex.printStackTrace();
  		status = 1;

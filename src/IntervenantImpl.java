@@ -4,7 +4,11 @@ import java.lang.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.*;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.*;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Cette classe défini le traitant de communication du programme client. Elle
@@ -35,11 +39,11 @@ public class IntervenantImpl implements Intervenant {
 	 * prenom de l'intervenant
 	 */
 	private String prenom;
-
+	
 	/**
-	 * coordonées qui identifient l'intervenant (de facon unique) pour le retrouver.
+	 * intervenants conectées au forum
 	 */
-	private String address;
+	private ArrayList<Intervenant> intervenants = new ArrayList<Intervenant>();
 
 	/**
 	 * constructeur de la classe IntervenantImpl. Le nom et le prenom de
@@ -57,7 +61,7 @@ public class IntervenantImpl implements Intervenant {
 	public IntervenantImpl(String nom, String prenom, String port) throws RemoteException, UnknownHostException {
 		this.nom = nom;
 		this.prenom = prenom;
-		address = InetAddress.getLocalHost().getHostAddress() + port;
+		//this.address = InetAddress.getLocalHost().getHostAddress() + port;
 	}
 
 	/**
@@ -81,8 +85,10 @@ public class IntervenantImpl implements Intervenant {
 	 * @param forum_name
 	 *            nom du forum
 	 */
-	public void enter(String forum_name) throws Exception {
-
+	public void enter(String forum_name, int forum_port) throws Exception {
+        Registry registry = LocateRegistry.getRegistry(forum_port);
+        forum = (Forum) registry.lookup(forum_name);
+        forum.enter(this, this.nom, this.prenom);
 		// TO DO
 	}
 
@@ -95,9 +101,10 @@ public class IntervenantImpl implements Intervenant {
 	 *            message à envoyer aux intervenants enregistrer dans le forum.
 	 */
 	public void say(String msg) throws Exception {
-
-		// TO DO
-
+		for(Iterator<Intervenant> i=intervenants.iterator(); i.hasNext(); ) {
+			Intervenant interv = i.next();
+			interv.listen(msg);
+		}
 	}
 
 	/**
@@ -109,15 +116,15 @@ public class IntervenantImpl implements Intervenant {
 	 *            nouveau message à imprimer dans le gui.
 	 */
 	public void listen(String msg) throws RemoteException {
-		// TO DO
+		gui.Print(msg);
 	}
 
 	public void addNewClient(Intervenant i) throws RemoteException {
-		// TO DO
+		intervenants.add(i);
 	}
 
 	public void delNewClient(Intervenant i) throws RemoteException {
-		// TO DO
+		intervenants.remove(i);
 	}
 
 	/**
@@ -126,7 +133,10 @@ public class IntervenantImpl implements Intervenant {
 	 * référence distante vers le forum et exécuter la méthode leave dessus.
 	 */
 	public void leave() throws Exception {
-		// TO DO
+		for(Iterator<Intervenant> i=intervenants.iterator(); i.hasNext(); ) {
+			Intervenant interv = i.next();
+			interv.delNewClient(interv);
+		}
 	}
 
 	/**
@@ -137,10 +147,5 @@ public class IntervenantImpl implements Intervenant {
 	public String who() throws Exception {
 		// TO DO
 		return null; // CETTE LIGNE EST A CHANGER
-	}
-
-	@Override
-	public String getAddress() throws RemoteException {
-		return this.address;
 	}
 }

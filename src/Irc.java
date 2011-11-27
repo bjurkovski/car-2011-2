@@ -1,6 +1,9 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.lang.*;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 
 
 /**
@@ -15,10 +18,13 @@ public class Irc {
          
     public static void main(String args[]) {			
 	try{
-	
-	// TO DO !!!
-        // create the GUI
-        // instanciate the intervenant implementation
+		int port = Integer.parseInt(args[2]);
+		IntervenantImpl intervenant = new IntervenantImpl(args[0], args[1], args[2]);
+		intervenant.setGUI(new IrcGui());
+		Intervenant stub = (Intervenant) UnicastRemoteObject.exportObject(intervenant, port);
+		Registry registry = LocateRegistry.createRegistry(port);
+		//Registry registry = LocateRegistry.getRegistry();
+		registry.rebind(args[0]+"_"+args[1], stub);
 		System.out.println("Client running");
 	} catch (Exception e) {
           System.out.println("ERROR : " + e) ;

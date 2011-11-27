@@ -10,7 +10,7 @@ public class ForumImpl implements Forum {
 	/**
     la structure de mémoristion des intervenants
 	 */
-	protected HashMap<Intervenant, IntervenantDescriptor> intervenants = new HashMap<Intervenant, IntervenantDescriptor>();
+	protected ArrayList<Intervenant> intervenants = new ArrayList<Intervenant>();
 	/**
 	 * l'identifiant unique d'intervenant
 	 */	
@@ -28,9 +28,13 @@ public class ForumImpl implements Forum {
 	 * @return un identifiant interne representant l'intervenant 
 	 * dans la structure de mémoristion des intervenants
 	 */
-	public synchronized HashMap<Intervenant, IntervenantDescriptor> enter (Intervenant intervenant, String prenom, String nom) throws RemoteException{
+	public synchronized ArrayList<Intervenant> enter (Intervenant intervenant, String prenom, String nom) throws RemoteException{
+		intervenants.add(intervenant);
 		
-		intervenants.put(intervenant, new IntervenantDescriptor(intervenant, prenom, nom));
+		for(Iterator<Intervenant> i=intervenants.iterator(); i.hasNext(); ) {
+			Intervenant interv = i.next();
+			interv.addNewClient(intervenant);
+		}
 
 		return intervenants;
 	}
