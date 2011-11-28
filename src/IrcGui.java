@@ -141,9 +141,18 @@ public class IrcGui {
 	     * @param e l'evenement associé
 	     */
 		public void actionPerformed (ActionEvent e) {
+			String forumName = irc.data.getText();
+			if(!forumName.isEmpty())
+				{
+				try {
+					intervenant.enter(forumName);
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
 			// TO DO !!!
-			  // connexion au forum
-			  // le nom du forum est dans irc.data.getText()
+
 		}
     }  
     
@@ -169,9 +178,14 @@ public class IrcGui {
 	     * @param e l'evenement associé
 	     */
 		public void actionPerformed (ActionEvent e) {
-			// TO DO !!!
-			  // emission d'une commande say au forum via le traitant de communication
-			  // le msg est dans irc.data.getText()
+			String msg = irc.data.getText();
+			try {
+				intervenant.say(msg);
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
 		}
     }  
     
@@ -197,9 +211,13 @@ public class IrcGui {
 	     * @param e l'evenement associé
 	     */
 		public void actionPerformed (ActionEvent e) {
-			
-			  // TO DO !!!
-			  // emission d'une commande who au forum via le traitant de communication	
+			try {
+				Print("Users Connected to the Forum:");
+				Print(intervenant.who());
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
     }
 
@@ -225,8 +243,12 @@ public class IrcGui {
 	     * @param e l'evenement associé
 	     */
 		public void actionPerformed (ActionEvent e) {
-			// TO DO !!!
-			// emission d'une commande leave au forum via le traitant de communication	
+			try {
+				intervenant.leave();
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 	
 		}
     }

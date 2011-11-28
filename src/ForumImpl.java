@@ -15,6 +15,7 @@ public class ForumImpl implements Forum {
 	 * l'identifiant unique d'intervenant
 	 */	
 	protected Integer idCounter = new Integer(0);
+	
 	public ForumImpl() throws RemoteException {
 		super();
 	}
@@ -28,14 +29,27 @@ public class ForumImpl implements Forum {
 	 * @return un identifiant interne representant l'intervenant 
 	 * dans la structure de mémoristion des intervenants
 	 */
-	public synchronized ArrayList<Intervenant> enter (Intervenant intervenant, String prenom, String nom) throws RemoteException{
-		intervenants.add(intervenant);
+	public synchronized ArrayList<Intervenant> enter(Intervenant intervenant, String prenom, String nom) throws RemoteException{
+		boolean alreadyExists = false;
 		
 		for(Iterator<Intervenant> i=intervenants.iterator(); i.hasNext(); ) {
 			Intervenant interv = i.next();
-			interv.addNewClient(intervenant);
+			if(interv.equals(intervenant))
+				alreadyExists = true;
 		}
-
+		
+		if(!alreadyExists)
+		{
+			intervenants.add(intervenant);
+			
+			for(Iterator<Intervenant> i=intervenants.iterator(); i.hasNext(); ) {
+				Intervenant interv = i.next();
+				interv.addNewClient(intervenant);
+			}
+		}
+		intervenant.setId(idCounter);
+		idCounter++;
+		
 		return intervenants;
 	}
 
@@ -45,8 +59,26 @@ public class ForumImpl implements Forum {
 	 * @param id identification de l'intervenant retourne lors de l'appel à la methode enter.
 	 */
 	public synchronized void leave(int id) throws RemoteException{
-		// TO DO
+		Intervenant intervenant = intervenants.get(id);
+		intervenants.remove(intervenant);
+		
+		for(Iterator<Intervenant> i=intervenants.iterator(); i.hasNext(); ) {
+			Intervenant interv = i.next();
+			interv.delNewClient(intervenant);
+		}
 
+	}
+	
+	public synchronized String who() throws RemoteException{
+		StringBuilder sBuilder = new StringBuilder();
+		
+		for(Iterator<Intervenant> i=intervenants.iterator(); i.hasNext(); ) {
+			Intervenant interv = i.next();
+			sBuilder.append(interv.getName());
+			if (i.hasNext())
+		        sBuilder.append("\n");
+		}
+		return sBuilder.toString();
 	}
 }
 

@@ -74,6 +74,7 @@ public class IntervenantImpl implements Intervenant {
 	 */
 	public void setGUI(IrcGui gui) {
 		this.gui = gui;
+		this.gui.setHandler(this);
 	}
 
 	/**
@@ -85,11 +86,10 @@ public class IntervenantImpl implements Intervenant {
 	 * @param forum_name
 	 *            nom du forum
 	 */
-	public void enter(String forum_name, int forum_port) throws Exception {
-        Registry registry = LocateRegistry.getRegistry(forum_port);
+	public void enter(String forum_name) throws Exception {
+        Registry registry = LocateRegistry.getRegistry(Forum.PORT);
         forum = (Forum) registry.lookup(forum_name);
-        forum.enter(this, this.nom, this.prenom);
-		// TO DO
+        this.intervenants = forum.enter(this, this.nom, this.prenom);         
 	}
 
 	/**
@@ -126,6 +126,16 @@ public class IntervenantImpl implements Intervenant {
 	public void delNewClient(Intervenant i) throws RemoteException {
 		intervenants.remove(i);
 	}
+	
+	public String getName() throws RemoteException
+	{
+		return nom;
+	}
+	
+	public void setId(int newId) throws RemoteException
+	{
+		this.id = newId;
+	}
 
 	/**
 	 * Execute la methode leave sur le forum. Cette methode est appelé par le
@@ -133,10 +143,9 @@ public class IntervenantImpl implements Intervenant {
 	 * référence distante vers le forum et exécuter la méthode leave dessus.
 	 */
 	public void leave() throws Exception {
-		for(Iterator<Intervenant> i=intervenants.iterator(); i.hasNext(); ) {
-			Intervenant interv = i.next();
-			interv.delNewClient(interv);
-		}
+		
+        forum.leave(this.id); 
+        intervenants.clear();
 	}
 
 	/**
@@ -145,7 +154,7 @@ public class IntervenantImpl implements Intervenant {
 	 * référence distante vers le forum et exécuter la methode who dessus.
 	 */
 	public String who() throws Exception {
-		// TO DO
-		return null; // CETTE LIGNE EST A CHANGER
+		
+		return forum.who();
 	}
 }

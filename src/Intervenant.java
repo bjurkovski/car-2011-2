@@ -6,4 +6,8 @@ public interface Intervenant extends Remote {
 	public void addNewClient(Intervenant i) throws RemoteException;
 
 	public void delNewClient(Intervenant i) throws RemoteException;
+	
+	public String getName() throws RemoteException;
+	
+	public void setId(int newId) throws RemoteException;
 }

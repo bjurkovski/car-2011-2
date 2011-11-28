@@ -12,7 +12,10 @@ public interface Forum extends Remote {
  * @return un identifiant interne representant l'intervenant 
  * dans la structure de mémoristion des intervenants
  */
-  public  ArrayList<Intervenant> enter (Intervenant intervenant, String prenom, String nom)throws RemoteException;
+	
+  final static int PORT = 1234;
+	
+  public ArrayList<Intervenant> enter (Intervenant intervenant, String prenom, String nom)throws RemoteException;
   
    /**
  * De-enregistre un intervanant dans la structure de mémoristion des intervenants. Cette méthode est
@@ -21,6 +24,7 @@ public interface Forum extends Remote {
  */
   public  void leave(int id) throws RemoteException;
   
+  public String who() throws RemoteException;
  
 }
 
