@@ -87,9 +87,9 @@ public class IntervenantImpl implements Intervenant {
 	 *            nom du forum
 	 */
 	public void enter(String forum_name) throws Exception {
-        Registry registry = LocateRegistry.getRegistry(Forum.PORT);
-        forum = (Forum) registry.lookup(forum_name);
-        this.intervenants = forum.enter(this, this.nom, this.prenom);         
+		Registry registry = LocateRegistry.getRegistry(Forum.PORT);
+		forum = (Forum) registry.lookup(forum_name);
+		this.intervenants = forum.enter(this, this.nom, this.prenom);         
 	}
 
 	/**
@@ -103,7 +103,7 @@ public class IntervenantImpl implements Intervenant {
 	public void say(String msg) throws Exception {
 		for(Iterator<Intervenant> i=intervenants.iterator(); i.hasNext(); ) {
 			Intervenant interv = i.next();
-			interv.listen(msg);
+			interv.listen(prenom + " " + nom + " says: " + msg);
 		}
 	}
 
@@ -127,13 +127,15 @@ public class IntervenantImpl implements Intervenant {
 		intervenants.remove(i);
 	}
 	
-	public String getName() throws RemoteException
-	{
+	public String getName() throws RemoteException {
+		return prenom;
+	}
+
+	public String getLastName() throws RemoteException {
 		return nom;
 	}
 	
-	public void setId(int newId) throws RemoteException
-	{
+	public void setId(int newId) throws RemoteException {
 		this.id = newId;
 	}
 
@@ -143,9 +145,8 @@ public class IntervenantImpl implements Intervenant {
 	 * référence distante vers le forum et exécuter la méthode leave dessus.
 	 */
 	public void leave() throws Exception {
-		
-        forum.leave(this.id); 
-        intervenants.clear();
+		forum.leave(this.id); 
+		intervenants.clear();
 	}
 
 	/**

@@ -8,6 +8,8 @@ public interface Intervenant extends Remote {
 	public void delNewClient(Intervenant i) throws RemoteException;
 	
 	public String getName() throws RemoteException;
+
+	public String getLastName() throws RemoteException;
 	
 	public void setId(int newId) throws RemoteException;
 }

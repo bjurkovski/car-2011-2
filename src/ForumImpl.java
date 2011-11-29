@@ -38,8 +38,7 @@ public class ForumImpl implements Forum {
 				alreadyExists = true;
 		}
 		
-		if(!alreadyExists)
-		{
+		if(!alreadyExists) {
 			intervenants.add(intervenant);
 			
 			for(Iterator<Intervenant> i=intervenants.iterator(); i.hasNext(); ) {
@@ -58,7 +57,7 @@ public class ForumImpl implements Forum {
 	 * appelée par le traitant de communication du programme client (IntervenantImpl) 
 	 * @param id identification de l'intervenant retourne lors de l'appel à la methode enter.
 	 */
-	public synchronized void leave(int id) throws RemoteException{
+	public synchronized void leave(int id) throws RemoteException {
 		Intervenant intervenant = intervenants.get(id);
 		intervenants.remove(intervenant);
 		
@@ -74,7 +73,7 @@ public class ForumImpl implements Forum {
 		
 		for(Iterator<Intervenant> i=intervenants.iterator(); i.hasNext(); ) {
 			Intervenant interv = i.next();
-			sBuilder.append(interv.getName());
+			sBuilder.append(interv.getName()+" "+interv.getLastName());
 			if (i.hasNext())
 		        sBuilder.append("\n");
 		}

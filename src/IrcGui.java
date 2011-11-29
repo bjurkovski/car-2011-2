@@ -114,8 +114,8 @@ public class IrcGui {
     	try {
     		this.text.append(msg+"\n");
     	} catch (Exception ex) {
-			ex.printStackTrace();
-			return;
+		ex.printStackTrace();
+		return;
     	}	
     }
 
@@ -146,6 +146,8 @@ public class IrcGui {
 				{
 				try {
 					intervenant.enter(forumName);
+					irc.text.append("You are connected to '" + forumName + "'\n");
+					irc.data.setText("");
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -181,6 +183,7 @@ public class IrcGui {
 			String msg = irc.data.getText();
 			try {
 				intervenant.say(msg);
+				irc.data.setText("");
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -245,6 +248,7 @@ public class IrcGui {
 		public void actionPerformed (ActionEvent e) {
 			try {
 				intervenant.leave();
+				irc.text.append("You've left the forum\n");
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
