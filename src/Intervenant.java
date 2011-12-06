@@ -12,4 +12,9 @@ public interface Intervenant extends Remote {
 	public String getLastName() throws RemoteException;
 	
 	public void setId(int newId) throws RemoteException;
+	
+	public int getId() throws RemoteException;
+	
+	public void clearForumInformation() throws RemoteException;
+
 }

@@ -24,6 +24,7 @@ public class IntervenantImpl implements Intervenant {
 	 * Référence distante vers un forum.
 	 */
 	private static Forum forum = null; // ref vers forum
+	private static Fabrique fabrique = null; // ref vers fabrique
 
 	/**
 	 * Identification du client dans le forum. Cet identifiant est retourné lors
@@ -86,10 +87,17 @@ public class IntervenantImpl implements Intervenant {
 	 * @param forum_name
 	 *            nom du forum
 	 */
-	public void enter(String forum_name) throws Exception {
-		Registry registry = LocateRegistry.getRegistry(Forum.PORT);
-		forum = (Forum) registry.lookup(forum_name);
-		this.intervenants = forum.enter(this, this.nom, this.prenom);         
+	public boolean enter(String forum_name) throws Exception {
+		Registry registry = LocateRegistry.getRegistry(Fabrique.PORT);
+		fabrique = (Fabrique) registry.lookup(Fabrique.NAME);
+		forum = fabrique.getForum(forum_name);
+		if(forum != null){
+			if(forum.enter(this, this.prenom, this.nom)) {			
+				this.intervenants = forum.getIntervenants();
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -138,6 +146,10 @@ public class IntervenantImpl implements Intervenant {
 	public void setId(int newId) throws RemoteException {
 		this.id = newId;
 	}
+	
+	public int getId() throws RemoteException {
+		return id;
+	}
 
 	/**
 	 * Execute la methode leave sur le forum. Cette methode est appelé par le
@@ -145,7 +157,12 @@ public class IntervenantImpl implements Intervenant {
 	 * référence distante vers le forum et exécuter la méthode leave dessus.
 	 */
 	public void leave() throws Exception {
-		forum.leave(this.id); 
+		if(forum != null){
+			forum.leave(this.id); 
+			forum = null;
+			this.id = 0;
+		}
+
 		intervenants.clear();
 	}
 
@@ -155,7 +172,16 @@ public class IntervenantImpl implements Intervenant {
 	 * référence distante vers le forum et exécuter la methode who dessus.
 	 */
 	public String who() throws Exception {
-		
-		return forum.who();
+		if(forum != null)
+			return forum.who();
+		else
+			return "";
+	}
+	
+	public void clearForumInformation() throws RemoteException {
+		forum = null;
+		this.id = 0;
+		intervenants.clear();
+		gui.showDisconnectedInterface();
 	}
 }

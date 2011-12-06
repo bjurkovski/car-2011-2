@@ -13,9 +13,7 @@ public interface Forum extends Remote {
  * dans la structure de mémoristion des intervenants
  */
 	
-  final static int PORT = 1234;
-	
-  public ArrayList<Intervenant> enter (Intervenant intervenant, String prenom, String nom)throws RemoteException;
+  public boolean enter (Intervenant intervenant, String prenom, String nom)throws RemoteException;
   
    /**
  * De-enregistre un intervanant dans la structure de mémoristion des intervenants. Cette méthode est
@@ -25,6 +23,18 @@ public interface Forum extends Remote {
   public  void leave(int id) throws RemoteException;
   
   public String who() throws RemoteException;
+  
+  public String getForumName() throws RemoteException;
+  public int getForumPort() throws RemoteException;
+  public ArrayList<Intervenant> getIntervenants() throws RemoteException;
+
+  public void start() throws RemoteException;
+  public void stop() throws RemoteException;
+  
+  public boolean banClient(String name, String lastName) throws RemoteException;
+  public boolean authClient(String name, String lastName) throws RemoteException;
+
+  public String ping() throws RemoteException;
  
 }
 
