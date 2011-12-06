@@ -163,15 +163,17 @@ public class IrcGui {
 					boolean hasEntered = intervenant.enter(forumName);
 
 					if (hasEntered) {
-						irc.text.append("You are connected to '" + forumName
-								+ "'\n");
+						Print("You are connected to '" + forumName);
 						statut = CONNECTED;
+					}
+					else {
+						Print("You can't connect to this forum because you have been banned.");
 					}
 					irc.data.setText("");
 
 				} catch (Exception e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
+					Print("There occurred a problem in the connection.");
 				}
 			}
 			if (statut == CONNECTED) {
@@ -220,8 +222,8 @@ public class IrcGui {
 				intervenant.say(msg);
 				irc.data.setText("");
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
+				Print("There occurred a problem in receiving a message.");
 			}
 			if (statut == CONNECTED) {
 				write_button.setEnabled(true);
@@ -266,8 +268,8 @@ public class IrcGui {
 				Print("Users Connected to the Forum:");
 				Print(intervenant.who());
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
+				Print("There occurred a problem in receiving the list of clients.");
 			}
 			if (statut == CONNECTED) {
 				write_button.setEnabled(true);
@@ -310,11 +312,11 @@ public class IrcGui {
 		public void actionPerformed(ActionEvent e) {
 			try {
 				intervenant.leave();
-				irc.text.append("You've left the forum\n");
+				Print("You've left the forum");
 				statut = NOTCONNECTED;
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
+				Print("There occurred a problem in leaving a forum.");
 			}
 			if (statut == CONNECTED) {
 				write_button.setEnabled(true);
@@ -340,7 +342,7 @@ public class IrcGui {
 		who_button.setEnabled(false);
 		leave_button.setEnabled(false);
 		statut = NOTCONNECTED;
-		
+		Print("You have been kicked out of the forum");		
 	}
 
 }

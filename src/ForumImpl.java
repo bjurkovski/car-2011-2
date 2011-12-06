@@ -37,13 +37,6 @@ public class ForumImpl implements Forum {
 	 * dans la structure de mémoristion des intervenants
 	 */
 	public synchronized boolean enter(Intervenant intervenant, String prenom, String nom) throws RemoteException{
-		boolean alreadyExists = false;
-		
-		for(Iterator<Intervenant> i=intervenants.iterator(); i.hasNext(); ) {
-			Intervenant interv = i.next();
-			if(interv.equals(intervenant))
-				alreadyExists = true;
-		}
 		
 		boolean isBanned = false;
 		
@@ -53,7 +46,7 @@ public class ForumImpl implements Forum {
 				isBanned = true;
 		}
 		
-		if(!alreadyExists && !isBanned) {
+		if(!isBanned) {
 			intervenants.add(intervenant);
 			
 			for(Iterator<Intervenant> i=intervenants.iterator(); i.hasNext(); ) {

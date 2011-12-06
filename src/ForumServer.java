@@ -147,10 +147,10 @@ public class ForumServer {
 			if (!forumName.equals("")) {
 				try {
 					fabrique.create(forumName);
-					text.append(forumName + " was created successfully!");
-					text.append("\n");
+					Print(forumName + " was created successfully!");
 				} catch (Exception e1) {
 					e1.printStackTrace();
+					Print("There occurred a problem in the creation.");
 				}
 			}
 			data.setText("");
@@ -188,11 +188,10 @@ public class ForumServer {
 			if (!forumName.equals("")) {
 				try {
 					fabrique.destroy(forumName);
-					text.append(forumName + " was deleted successfully!");
-					text.append("\n");
+					Print(forumName + " was deleted successfully!");
 				} catch (Exception e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
+					Print("There occurred a problem in the destruction.");
 				}
 			}
 			data.setText("");
@@ -230,8 +229,8 @@ public class ForumServer {
 				if (!listForums.equals(""))
 					Print(listForums);
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
+				Print("There occurred a problem in the listing of forums.");
 			}
 			data.setText("");
 		}
@@ -271,9 +270,12 @@ public class ForumServer {
 					if (!listForums.equals(""))
 						Print(listForums);
 				}
+				else {
+					Print("This forum doesn't exist.");
+				}
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
+				Print("There occurred a problem in the listing of clients.");
 			}
 			data.setText("");
 
@@ -311,7 +313,7 @@ public class ForumServer {
 			try {
 
 				Forum forum = fabrique.getForum(strings[0]);
-				if ((forum != null) && (strings[1] != "") && (strings[2] != "")) {
+				if ((forum != null) && (!strings[1].isEmpty()) && (!strings[2].isEmpty())) {
 
 					boolean banSucceedeed = forum.banClient(strings[1],
 							strings[2]);
@@ -321,8 +323,12 @@ public class ForumServer {
 					else
 						Print("Client already banned!");
 				}
+				else {
+					Print("This forum doesn't exist or client full name is empty.");
+				}
 			} catch (Exception e1) {
 				e1.printStackTrace();
+				Print("There occurred a problem in the banning.");
 			}
 			data.setText("");
 		}
@@ -359,7 +365,7 @@ public class ForumServer {
 			try {
 
 				Forum forum = fabrique.getForum(strings[0]);
-				if ((forum != null) && (strings[1] != "") && (strings[2] != "")) {
+				if ((forum != null) && (!strings[1].isEmpty()) && (!strings[2].isEmpty())) {
 
 					boolean authSucceedeed = forum.authClient(strings[1],
 							strings[2]);
@@ -369,8 +375,12 @@ public class ForumServer {
 					else
 						Print("Client already authorized!");
 				}
+				else {
+					Print("Forum doesn't exist or client full name is empty.");
+				}
 			} catch (Exception e1) {
 				e1.printStackTrace();
+				Print("There occurred a problem in the authorization.");
 			}
 			data.setText("");
 		}
@@ -413,9 +423,12 @@ public class ForumServer {
 					long elapsedTimeMillis = System.currentTimeMillis() - start;
 					Print(response + " - " + elapsedTimeMillis + " ms");
 				}
+				else {
+					Print("This forum doesn't exist.");
+				}
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
+				Print("There occurred a problem in the ping.");
 			}
 			data.setText("");
 		}
