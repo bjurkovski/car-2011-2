@@ -74,7 +74,6 @@ public class FabriqueImpl implements Fabrique {
 		  return null;
 	  }
 
-	@Override
 	public String listForums() {
 		StringBuilder sBuilder = new StringBuilder();
 		

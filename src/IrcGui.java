@@ -1,6 +1,5 @@
 import java.awt.*;
 import java.awt.event.*;
-import java.lang.*;
 
 /**
  * Cette classe défini l'interface graphique du programme client. L'interface
@@ -108,8 +107,8 @@ public class IrcGui {
 	 * @param intervenant
 	 *            une référence directe sur le traitant de communication
 	 */
-	public void setHandler(IntervenantImpl intervenant) {
-		this.intervenant = intervenant;
+	public void setHandler(IntervenantImpl interv) {
+		intervenant = interv;
 	}
 
 	/**

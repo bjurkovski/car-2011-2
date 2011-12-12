@@ -73,9 +73,9 @@ public class IntervenantImpl implements Intervenant {
 	 * @param gui
 	 *            le GUI
 	 */
-	public void setGUI(IrcGui gui) {
-		this.gui = gui;
-		this.gui.setHandler(this);
+	public void setGUI(IrcGui ircgui) {
+		gui = ircgui;
+		gui.setHandler(this);
 	}
 
 	/**
