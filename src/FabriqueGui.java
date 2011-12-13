@@ -151,7 +151,8 @@ public class FabriqueGui {
 					Print("There occurred a problem in the creation.");
 				}
 			}
-			data.setText("");
+			fabriqueGui.data.setText("");
+			fabriqueGui.data.requestFocus();
 		}
 	}
 
@@ -191,7 +192,8 @@ public class FabriqueGui {
 					Print("There occurred a problem in the destruction.");
 				}
 			}
-			data.setText("");
+			fabriqueGui.data.setText("");
+			fabriqueGui.data.requestFocus();
 		}
 	}
 
@@ -226,7 +228,7 @@ public class FabriqueGui {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			data.setText("");
+			fabriqueGui.data.requestFocus();
 		}
 	}
 
@@ -262,7 +264,8 @@ public class FabriqueGui {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			data.setText("");
+			fabriqueGui.data.setText("");
+			fabriqueGui.data.requestFocus();
 		}
 	}
 
@@ -300,7 +303,8 @@ public class FabriqueGui {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			data.setText("");
+			fabriqueGui.data.setText("");
+			fabriqueGui.data.requestFocus();
 		}
 	}
 
@@ -338,7 +342,8 @@ public class FabriqueGui {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			data.setText("");
+			fabriqueGui.data.setText("");
+			fabriqueGui.data.requestFocus();
 		}
 	}
 
@@ -374,7 +379,8 @@ public class FabriqueGui {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			data.setText("");
+			fabriqueGui.data.setText("");
+			fabriqueGui.data.requestFocus();
 		}
 	}
 }

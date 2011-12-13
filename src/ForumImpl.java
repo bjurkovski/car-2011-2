@@ -8,7 +8,7 @@ import java.rmi.server.*;
  * classe représentant l'objet servant du forum 
  */
 public class ForumImpl implements Forum {
-	// TO DO
+
 	/**
     la structure de mémoristion des intervenants
 	 */
@@ -172,23 +172,23 @@ public class ForumImpl implements Forum {
 				} catch (Exception e) {
 					return false;
 				}
-				return true;
 			}
+			return true;
 		}
 		return false;
 	}
 	
 	public synchronized boolean authClient(String name, String lastName) throws RemoteException {
-		boolean alreadyBanned = false;
+		boolean isBanned = false;
 		String fullName = name + "_" + lastName;
 		
 		for(Iterator<String> i=intervenantsBanned.iterator(); i.hasNext(); ) {
 			String intervFullName = i.next();
 			if(intervFullName.equals(fullName))
-				alreadyBanned = true;
+				isBanned = true;
 		}
 		
-		if(alreadyBanned) {
+		if(isBanned) {
 			intervenantsBanned.remove(fullName);			
 			return true;
 		}

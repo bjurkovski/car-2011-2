@@ -28,6 +28,7 @@ public class IrcGui {
 	 * ref directe vers le handler de communication (IntervenantImpl)
 	 */
 	static IntervenantImpl intervenant;
+	
 
 	/**
 	 * Indique que le client n'est pas connecté à un forum. Cette constante est
@@ -172,16 +173,23 @@ public class IrcGui {
 			String forumName = irc.data.getText();
 			if (!forumName.isEmpty()) {
 				try {
-					boolean hasEntered = intervenant.enter(forumName);
+					int returnCode = intervenant.enter(forumName);
 
-					if (hasEntered) {
-						Print("You are connected to '" + forumName);
-						statut = CONNECTED;
-					}
-					else {
-						Print("You can't connect to this forum because you have been banned.");
+
+					switch(returnCode) {
+						case IntervenantImpl.RETURNOK :
+							Print("You are connected to '" + forumName);
+							statut = CONNECTED;
+							break;
+						case IntervenantImpl.ISBANNED :
+							Print("You can't connect to this forum because you have been banned.");
+							break;
+						case IntervenantImpl.FORUMABSENT :
+							Print("The forum with that name doesn't exist");
+							break;
 					}
 					irc.data.setText("");
+					irc.data.requestFocus();
 
 				} catch (Exception e1) {
 					e1.printStackTrace();
@@ -248,6 +256,7 @@ public class IrcGui {
 				who_button.setEnabled(false);
 				leave_button.setEnabled(false);
 			}
+			irc.data.requestFocus();
 		}
 	}
 
@@ -294,6 +303,7 @@ public class IrcGui {
 				who_button.setEnabled(false);
 				leave_button.setEnabled(false);
 			}
+			irc.data.requestFocus();
 		}
 	}
 
@@ -341,6 +351,7 @@ public class IrcGui {
 				who_button.setEnabled(false);
 				leave_button.setEnabled(false);
 			}
+			irc.data.requestFocus();
 		}
 	}
 

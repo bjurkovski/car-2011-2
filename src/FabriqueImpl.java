@@ -81,7 +81,7 @@ public class FabriqueImpl implements Fabrique {
 
 	public void listForums() throws RemoteException {
 		try {
-			gui.Print("Forums:");
+			gui.Print("List of Forums:");
 			StringBuilder sBuilder = new StringBuilder();
 			
 			for(Iterator<Forum> i=forums.iterator(); i.hasNext(); ) {
@@ -107,7 +107,7 @@ public class FabriqueImpl implements Fabrique {
 	
 	public void listClients(String forumName) throws RemoteException {
 		try {
-			gui.Print("Clients:");
+			gui.Print("Clients of Forum " + forumName + " :");
 			Forum forum = getForum(forumName);
 			if (forum != null) {
 				String listForums = forum.who();
@@ -165,6 +165,7 @@ public class FabriqueImpl implements Fabrique {
 		 try {
 			Forum forum = getForum(forumName);
 			if (forum != null) {
+				gui.Print("-- Pinging forum "+forumName+ "--");
 				gui.Print("Ping?");
 				// Get current time
 				long start = System.currentTimeMillis();

@@ -17,6 +17,13 @@ import java.util.Iterator;
  * les communications distante avec le forum.
  */
 public class IntervenantImpl implements Intervenant {
+	
+	/**
+	 * Indique que les possibles retours de la fonction enter
+	 */
+	public static final int RETURNOK = 0;
+	public static final int ISBANNED = 1;
+	public static final int FORUMABSENT = 2;
 
 	private static IrcGui gui;
 
@@ -87,17 +94,22 @@ public class IntervenantImpl implements Intervenant {
 	 * @param forum_name
 	 *            nom du forum
 	 */
-	public boolean enter(String forum_name) throws Exception {
+	public int enter(String forum_name) throws Exception {
 		Registry registry = LocateRegistry.getRegistry(Fabrique.PORT);
 		fabrique = (Fabrique) registry.lookup(Fabrique.NAME);
 		forum = fabrique.getForum(forum_name);
 		if(forum != null){
 			if(forum.enter(this, this.prenom, this.nom)) {			
 				this.intervenants = forum.getIntervenants();
-				return true;
+				return RETURNOK;
+			}
+			else {
+				return ISBANNED;
 			}
 		}
-		return false;
+		else {
+			return FORUMABSENT;
+		}
 	}
 
 	/**
