@@ -59,7 +59,7 @@ public class IntervenantImpl implements Intervenant {
 	 * @throws UnknownHostException
 	 * 			l'intervenant n'a pas reussi a obtenir son IP
 	 */
-	public IntervenantImpl(String nom, String prenom, String port) throws RemoteException, UnknownHostException {
+	public IntervenantImpl(String prenom, String nom, String port) throws RemoteException, UnknownHostException {
 		this.nom = nom;
 		this.prenom = prenom;
 		//this.address = InetAddress.getLocalHost().getHostAddress() + port;
@@ -160,7 +160,7 @@ public class IntervenantImpl implements Intervenant {
 		if(forum != null){
 			forum.leave(this.id); 
 			forum = null;
-			this.id = 0;
+			id = 0;
 		}
 
 		intervenants.clear();
@@ -178,9 +178,8 @@ public class IntervenantImpl implements Intervenant {
 			return "";
 	}
 	
-	public void clearForumInformation() throws RemoteException {
+	public void clearForumInformation() throws Exception {
 		forum = null;
-		this.id = 0;
 		intervenants.clear();
 		gui.showDisconnectedInterface();
 	}

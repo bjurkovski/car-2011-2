@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.rmi.RemoteException;
 
 /**
  * Cette classe défini l'interface graphique du programme client. L'interface
@@ -94,6 +95,12 @@ public class IrcGui {
 		who_button.setEnabled(false);
 		leave_button.setEnabled(false);
 
+		frame.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent we) {
+				System.exit(0);
+			}
+		});
+		
 		frame.setSize(530, 300);
 		text.setBackground(Color.black);
 		frame.show();
@@ -109,6 +116,12 @@ public class IrcGui {
 	 */
 	public void setHandler(IntervenantImpl interv) {
 		intervenant = interv;
+		try {
+			frame.setTitle(intervenant.getName() + " " + intervenant.getLastName());
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**

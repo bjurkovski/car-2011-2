@@ -6,10 +6,13 @@ import java.awt.TextArea;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.rmi.RemoteException;
 
 
 public class FabriqueGui {
-	Fabrique fabrique;
+	FabriqueImpl fabrique;
 	
 	/**
 	 * utilisé pour imprimer les messages de chat
@@ -39,8 +42,9 @@ public class FabriqueGui {
 	 * authListener)) - ping forum : ping un forum ((traitant associé :
 	 * pingListener))
 	 */
-	public FabriqueGui(Fabrique fabrique) {
+	public FabriqueGui(FabriqueImpl fabrique) {
 		this.fabrique = fabrique;
+		fabrique.setGUI(this);
 		
 		frame = new Frame();
 		frame.setLayout(new FlowLayout());
@@ -80,6 +84,12 @@ public class FabriqueGui {
 		Button ping_button = new Button("ping forum");
 		ping_button.addActionListener(new pingListener(this));
 		frame.add(ping_button);
+		
+		frame.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent we) {
+				System.exit(0);
+			}
+		});
 
 		frame.setSize(530, 300);
 		text.setBackground(Color.black);
@@ -142,7 +152,6 @@ public class FabriqueGui {
 				}
 			}
 			data.setText("");
-
 		}
 	}
 
@@ -212,13 +221,10 @@ public class FabriqueGui {
 		 */
 		public void actionPerformed(ActionEvent e) {
 			try {
-				Print("Forums:");
-				String listForums = fabrique.listForums();
-				if (!listForums.equals(""))
-					Print(listForums);
-			} catch (Exception e1) {
+				fabrique.listForums();
+			} catch (RemoteException e1) {
+				// TODO Auto-generated catch block
 				e1.printStackTrace();
-				Print("There occurred a problem in the listing of forums.");
 			}
 			data.setText("");
 		}
@@ -251,22 +257,12 @@ public class FabriqueGui {
 		public void actionPerformed(ActionEvent e) {
 			String forumName = fabriqueGui.data.getText();
 			try {
-				Print("Clients:");
-				Forum forum = fabrique.getForum(forumName);
-				if (forum != null) {
-					String listForums = forum.who();
-					if (!listForums.equals(""))
-						Print(listForums);
-				}
-				else {
-					Print("This forum doesn't exist.");
-				}
-			} catch (Exception e1) {
+				fabrique.listClients(forumName);
+			} catch (RemoteException e1) {
+				// TODO Auto-generated catch block
 				e1.printStackTrace();
-				Print("There occurred a problem in the listing of clients.");
 			}
 			data.setText("");
-
 		}
 	}
 
@@ -299,24 +295,10 @@ public class FabriqueGui {
 			String command = fabriqueGui.data.getText();
 			String[] strings = command.split(" ");
 			try {
-
-				Forum forum = fabrique.getForum(strings[0]);
-				if ((forum != null) && (!strings[1].isEmpty()) && (!strings[2].isEmpty())) {
-
-					boolean banSucceedeed = forum.banClient(strings[1],
-							strings[2]);
-					if (banSucceedeed)
-						Print(strings[1] + " " + strings[2]
-								+ " banned successfully");
-					else
-						Print("Client already banned!");
-				}
-				else {
-					Print("This forum doesn't exist or client full name is empty.");
-				}
-			} catch (Exception e1) {
+				fabrique.banClient(strings[0], strings[1], strings[2]);
+			} catch (RemoteException e1) {
+				// TODO Auto-generated catch block
 				e1.printStackTrace();
-				Print("There occurred a problem in the banning.");
 			}
 			data.setText("");
 		}
@@ -351,24 +333,10 @@ public class FabriqueGui {
 			String command = fabriqueGui.data.getText();
 			String[] strings = command.split(" ");
 			try {
-
-				Forum forum = fabrique.getForum(strings[0]);
-				if ((forum != null) && (!strings[1].isEmpty()) && (!strings[2].isEmpty())) {
-
-					boolean authSucceedeed = forum.authClient(strings[1],
-							strings[2]);
-					if (authSucceedeed)
-						Print(strings[1] + " " + strings[2]
-								+ " authorized successfully");
-					else
-						Print("Client already authorized!");
-				}
-				else {
-					Print("Forum doesn't exist or client full name is empty.");
-				}
-			} catch (Exception e1) {
+				fabrique.authClient(strings[0], strings[1], strings[2]);
+			} catch (RemoteException e1) {
+				// TODO Auto-generated catch block
 				e1.printStackTrace();
-				Print("There occurred a problem in the authorization.");
 			}
 			data.setText("");
 		}
@@ -401,22 +369,10 @@ public class FabriqueGui {
 		public void actionPerformed(ActionEvent e) {
 			String forumName = fabriqueGui.data.getText();
 			try {
-				Forum forum = fabrique.getForum(forumName);
-				if (forum != null) {
-					Print("Ping?");
-					// Get current time
-					long start = System.currentTimeMillis();
-					String response = forum.ping();
-					// Get elapsed time in milliseconds
-					long elapsedTimeMillis = System.currentTimeMillis() - start;
-					Print(response + " - " + elapsedTimeMillis + " ms");
-				}
-				else {
-					Print("This forum doesn't exist.");
-				}
-			} catch (Exception e1) {
+				fabrique.pingForum(forumName);
+			} catch (RemoteException e1) {
+				// TODO Auto-generated catch block
 				e1.printStackTrace();
-				Print("There occurred a problem in the ping.");
 			}
 			data.setText("");
 		}

@@ -22,8 +22,15 @@ public interface Fabrique extends Remote {
 
   public Forum getForum(String forumName) throws RemoteException;
 
-  public String listForums() throws RemoteException;
+  public void listForums() throws RemoteException;
+  
+  public void listClients(String forumName) throws RemoteException;
  
+  public void banClient(String forumName, String clientName, String clientLastName) throws RemoteException;
+ 
+  public void authClient(String forumName, String clientName, String clientLastName) throws RemoteException;
+  
+  public void pingForum(String forumName) throws RemoteException;
 }
 
 

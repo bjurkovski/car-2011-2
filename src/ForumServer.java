@@ -13,7 +13,7 @@ import java.rmi.server.*;
 
 public class ForumServer {
 
-	static Fabrique fabrique;
+	static FabriqueImpl fabrique;
 
 
 	public static void main(String args[]) {
@@ -22,13 +22,11 @@ public class ForumServer {
 
 		try {
 			fabrique = new FabriqueImpl();
-			Fabrique stub = (Fabrique) UnicastRemoteObject.exportObject(
-					fabrique, Fabrique.PORT);
+			Fabrique stub = (Fabrique) UnicastRemoteObject.exportObject(fabrique, Fabrique.PORT);
 			Registry registry = LocateRegistry.createRegistry(Fabrique.PORT);
 			// Registry registry = LocateRegistry.getRegistry();
 			registry.rebind(Fabrique.NAME, stub);
-			System.out.println("Fabrique '" + Fabrique.NAME
-					+ "' running on port " + Fabrique.PORT + "!");
+			System.out.println("Fabrique '" + Fabrique.NAME + "' running on port " + Fabrique.PORT + "!");
 			FabriqueGui fabriqueGui = new FabriqueGui(fabrique);
 		} catch (Exception ex) {
 			ex.printStackTrace();

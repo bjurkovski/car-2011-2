@@ -42,7 +42,7 @@ public class ForumImpl implements Forum {
 		
 		for(Iterator<String> i=intervenantsBanned.iterator(); i.hasNext(); ) {
 			String interv = i.next();
-			if(interv.equals(prenom + nom))
+			if(interv.equals(prenom + "_" + nom))
 				isBanned = true;
 		}
 		
@@ -69,12 +69,12 @@ public class ForumImpl implements Forum {
 	public synchronized void leave(int id) throws RemoteException {
 		boolean found = false;
 		int j=0;
-		do{
+		do {
 			if(intervenants.get(j).getId() == id)
 				found = true;
 			else
 				j++;				
-		}while(!found);
+		} while(!found);
 		
 		Intervenant intervenant = intervenants.get(j);
 		
@@ -126,69 +126,73 @@ public class ForumImpl implements Forum {
 	}
 	
 	public synchronized void stop() throws RemoteException {
-		for(Iterator<Intervenant> i = intervenants.iterator(); i.hasNext(); ) {
-			Intervenant interv = i.next();
-			interv.clearForumInformation();
-		}
-		intervenants.clear();
-
-		try {	
-		       Registry registry = LocateRegistry.getRegistry(forumPort);
-		       registry.unbind(forumName);
-		       System.out.println("Forum '" + forumName + "' deleted!");
-		   } catch(Exception ex) {
-		 		ex.printStackTrace();
-		   }
+		try {
+			for(Iterator<Intervenant> i = intervenants.iterator(); i.hasNext(); ) {
+				Intervenant interv = i.next();
+				interv.clearForumInformation();
+			}
+			intervenants.clear();
+			
+	       Registry registry = LocateRegistry.getRegistry(forumPort);
+	       registry.unbind(forumName);
+	       System.out.println("Forum '" + forumName + "' deleted!");
+	   } catch(Exception ex) {
+	 		ex.printStackTrace();
+	   }
 	}
 	
 	public synchronized boolean banClient(String name, String lastName) throws RemoteException {
-		
 		boolean alreadyBanned = false;
-		String fullName = name + lastName;
+		String fullName = name + "_" + lastName;
 		
 		for(Iterator<String> i=intervenantsBanned.iterator(); i.hasNext(); ) {
 			String intervFullName = i.next();
 			if(intervFullName.equals(fullName))
 				alreadyBanned = true;
 		}
+		
 		if(!alreadyBanned) {
 			intervenantsBanned.add(fullName);
 			
 			int i=0;
 			boolean found = false;
-			
-			while(!found && (i < intervenants.size())) {
-				String fullNameAux = intervenants.get(i).getName() + intervenants.get(i).getLastName();
+			while((i < intervenants.size()) && !found) {
+				String fullNameAux = intervenants.get(i).getName() + "_" + intervenants.get(i).getLastName();
 				if(fullNameAux.equals(fullName)) 
 					found = true;
 				else
 					i++;
 			}
+			
 			if(found) {
-				intervenants.get(i).clearForumInformation();
-				leave(intervenants.get(i).getId());
+				try {
+					Intervenant interv = intervenants.get(i); 
+					leave(interv.getId());
+					interv.clearForumInformation();
+				} catch (Exception e) {
+					return false;
+				}
+				return true;
 			}
-			
-			
-			return true;
 		}
 		return false;
 	}
 	
 	public synchronized boolean authClient(String name, String lastName) throws RemoteException {
-		
 		boolean alreadyBanned = false;
-		String fullName = name + lastName;
+		String fullName = name + "_" + lastName;
 		
 		for(Iterator<String> i=intervenantsBanned.iterator(); i.hasNext(); ) {
 			String intervFullName = i.next();
 			if(intervFullName.equals(fullName))
 				alreadyBanned = true;
 		}
+		
 		if(alreadyBanned) {
 			intervenantsBanned.remove(fullName);			
 			return true;
 		}
+		
 		return false;
 	}
 

@@ -7,6 +7,8 @@ public interface Intervenant extends Remote {
 
 	public void delNewClient(Intervenant i) throws RemoteException;
 	
+	public void leave() throws Exception;
+	
 	public String getName() throws RemoteException;
 
 	public String getLastName() throws RemoteException;
@@ -15,6 +17,6 @@ public interface Intervenant extends Remote {
 	
 	public int getId() throws RemoteException;
 	
-	public void clearForumInformation() throws RemoteException;
+	public void clearForumInformation() throws Exception;
 
 }
