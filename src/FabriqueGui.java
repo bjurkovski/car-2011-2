@@ -144,7 +144,7 @@ public class FabriqueGui {
 			String forumName = fabriqueGui.data.getText();
 			if (!forumName.equals("")) {
 				try {
-					fabrique.create(forumName);
+					fabrique.create(forumName, true);
 					Print(forumName + " was created successfully!");
 				} catch (Exception e1) {
 					e1.printStackTrace();
@@ -185,7 +185,7 @@ public class FabriqueGui {
 			String forumName = fabriqueGui.data.getText();
 			if (!forumName.equals("")) {
 				try {
-					fabrique.destroy(forumName);
+					fabrique.destroy(forumName, true);
 					Print(forumName + " was deleted successfully!");
 				} catch (Exception e1) {
 					e1.printStackTrace();
@@ -298,7 +298,7 @@ public class FabriqueGui {
 			String command = fabriqueGui.data.getText();
 			String[] strings = command.split(" ");
 			try {
-				fabrique.banClient(strings[0], strings[1], strings[2]);
+				fabrique.banClient(strings[0], strings[1], strings[2], true);
 			} catch (RemoteException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -337,7 +337,7 @@ public class FabriqueGui {
 			String command = fabriqueGui.data.getText();
 			String[] strings = command.split(" ");
 			try {
-				fabrique.authClient(strings[0], strings[1], strings[2]);
+				fabrique.authClient(strings[0], strings[1], strings[2], true);
 			} catch (RemoteException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();

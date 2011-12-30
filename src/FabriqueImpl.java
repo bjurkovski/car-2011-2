@@ -1,12 +1,15 @@
 import java.util.*;
 import java.io.*;
 import java.rmi.*;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.*;
 /**
  * classe représentant l'objet servant de la fabrique
  */
 public class FabriqueImpl implements Fabrique {
 	private static FabriqueGui gui;
+	private Type serverType;
 	/**
     la structure de mémoristion des forums
 	 */
@@ -14,37 +17,55 @@ public class FabriqueImpl implements Fabrique {
 	/**
 	 * l'identifiant unique d'intervenant
 	 */	
-	protected Integer portCounter = new Integer(1235);
-	
-	public FabriqueImpl() throws RemoteException {
-		super();
+	protected Integer portCounter;
+
+	public FabriqueImpl(Type t) throws RemoteException {
+		serverType = t; 
+		portCounter = t == Type.PRI ? 1240 : 2000;
 	}
-	
+
 	public void setGUI(FabriqueGui fGui) {
 		gui = fGui;
 	}
-	
-	public synchronized ArrayList<Forum> create(String forumName) throws RemoteException{
+
+	public synchronized ArrayList<Forum> create(String forumName, boolean fromGUI) throws RemoteException{
 		boolean alreadyExists = false;
-		
+
 		for(Iterator<Forum> i=forums.iterator(); i.hasNext(); ) {
 			Forum forumAux = i.next();
 			if(forumAux.getForumName().equals(forumName))
 				alreadyExists = true;
 		}
-		
+
 		if(!alreadyExists) {
 			Forum forum = new ForumImpl(forumName, portCounter);
-			
+
 			forums.add(forum);	
 			portCounter++;
 			forum.start();
+			if(fromGUI)
+			{
+				Registry registry;
+				Fabrique fabrique;
+				try {
+					if (serverType == Type.PRI){
+						registry = LocateRegistry.getRegistry(Fabrique.PORT_SEC);
+						fabrique = (Fabrique) registry.lookup(Fabrique.NAME_SEC);
+					}else{
+						registry = LocateRegistry.getRegistry(Fabrique.PORT_PRI);
+						fabrique = (Fabrique) registry.lookup(Fabrique.NAME_PRI);
+					}
+					fabrique.create(forumName, false);
+				} catch (Exception e) {
+					System.out.println("The other server is offline");
+				}
+			}
 		}
-		
+
 		return forums;
 	}
-	
-	public synchronized ArrayList<Forum> destroy(String forumName) throws RemoteException{
+
+	public synchronized ArrayList<Forum> destroy(String forumName, boolean fromGUI) throws RemoteException{
 		boolean forumFound = false;
 		int i= 0;
 		do {
@@ -53,37 +74,54 @@ public class FabriqueImpl implements Fabrique {
 			else
 				i++;
 		} while(!forumFound && (i < forums.size()));
-		
+
 		if(forumFound) {
 			forums.get(i).stop();
-			forums.remove(forums.get(i));	
+			forums.remove(forums.get(i));
+			if(fromGUI)
+			{
+				Registry registry;
+				Fabrique fabrique;
+				try {
+					if (serverType == Type.PRI){
+						registry = LocateRegistry.getRegistry(Fabrique.PORT_SEC);
+						fabrique = (Fabrique) registry.lookup(Fabrique.NAME_SEC);
+					}else{
+						registry = LocateRegistry.getRegistry(Fabrique.PORT_PRI);
+						fabrique = (Fabrique) registry.lookup(Fabrique.NAME_PRI);
+					}
+					fabrique.destroy(forumName, false);
+				} catch (Exception e) {
+					System.out.println("The other server is offline");
+				}
+			}
 		}
-		
+
 		return forums;
 	}
-	
-	  public synchronized Forum getForum(String forumName) throws RemoteException {
-		  boolean forumFound = false;
-		  int i= 0;
-		  if(!forums.isEmpty()){
-			  do{
-				  if(forumName.equals(forums.get(i).getForumName()))
-					  forumFound = true;
-				  else
-					  i++;
-			  }while(!forumFound && (i < forums.size()));
-			  
-			  if(forumFound)
-				  return forums.get(i);
-	  	}
-		  return null;
-	  }
+
+	public synchronized Forum getForum(String forumName) throws RemoteException {
+		boolean forumFound = false;
+		int i= 0;
+		if(!forums.isEmpty()){
+			do{
+				if(forumName.equals(forums.get(i).getForumName()))
+					forumFound = true;
+				else
+					i++;
+			}while(!forumFound && (i < forums.size()));
+
+			if(forumFound)
+				return forums.get(i);
+		}
+		return null;
+	}
 
 	public void listForums() throws RemoteException {
 		try {
 			gui.Print("List of Forums:");
 			StringBuilder sBuilder = new StringBuilder();
-			
+
 			for(Iterator<Forum> i=forums.iterator(); i.hasNext(); ) {
 				Forum forumAux = i.next();
 				try {
@@ -92,11 +130,11 @@ public class FabriqueImpl implements Fabrique {
 					e.printStackTrace();
 				}
 				if (i.hasNext())
-			        sBuilder.append("\n");
+					sBuilder.append("\n");
 			}
-			
+
 			String lForums = sBuilder.toString();
-			
+
 			if (!lForums.equals(""))
 				gui.Print(lForums);
 		} catch (Exception e1) {
@@ -104,7 +142,7 @@ public class FabriqueImpl implements Fabrique {
 			gui.Print("There occurred a problem in the listing of forums.");
 		}
 	}
-	
+
 	public void listClients(String forumName) throws RemoteException {
 		try {
 			gui.Print("Clients of Forum " + forumName + " :");
@@ -123,14 +161,36 @@ public class FabriqueImpl implements Fabrique {
 		}
 	}
 
-	 public void banClient(String forumName, String clientName, String clientLastName) throws RemoteException {
-		 try {
+	public void banClient(String forumName, String clientName, String clientLastName, boolean fromGUI) throws RemoteException {
+		try {
 			Forum forum = getForum(forumName);
 			if ((forum != null) && (!clientName.isEmpty()) && (!clientLastName.isEmpty())) {
-				boolean banSucceedeed = forum.banClient(clientName, clientLastName);
-				if (banSucceedeed)
-					gui.Print(clientName + " " + clientLastName + " banned successfully");
+				boolean banSucceedeed;
+				if(fromGUI)
+					banSucceedeed = forum.banClient(clientName, clientLastName, true);
 				else
+					banSucceedeed = forum.banClient(clientName, clientLastName, false);
+
+				if (banSucceedeed){
+					gui.Print(clientName + " " + clientLastName + " banned successfully");
+					if(fromGUI)
+					{
+						Registry registry;
+						Fabrique fabrique;
+						try {
+							if (serverType == Type.PRI){
+								registry = LocateRegistry.getRegistry(Fabrique.PORT_SEC);
+								fabrique = (Fabrique) registry.lookup(Fabrique.NAME_SEC);
+							}else{
+								registry = LocateRegistry.getRegistry(Fabrique.PORT_PRI);
+								fabrique = (Fabrique) registry.lookup(Fabrique.NAME_PRI);
+							}
+							fabrique.banClient(forumName, clientName, clientLastName, false);
+						} catch (Exception e) {
+							System.out.println("The other server is offline");
+						}
+					}
+				}else
 					gui.Print("Client already banned!");
 			}
 			else {
@@ -140,16 +200,33 @@ public class FabriqueImpl implements Fabrique {
 			e1.printStackTrace();
 			gui.Print("There occurred a problem in the banning.");
 		}
-	 }
-	 
-	 public void authClient(String forumName, String clientName, String clientLastName) throws RemoteException {
-		 try {
+	}
+
+	public void authClient(String forumName, String clientName, String clientLastName, boolean fromGUI) throws RemoteException {
+		try {
 			Forum forum = getForum(forumName);
 			if ((forum != null) && (!clientName.isEmpty()) && (!clientLastName.isEmpty())) {
 				boolean authSucceedeed = forum.authClient(clientName, clientLastName);
-				if (authSucceedeed)
+				if (authSucceedeed){
 					gui.Print(clientName + " " + clientLastName + " authorized successfully");
-				else
+					if(fromGUI)
+					{
+						Registry registry;
+						Fabrique fabrique;
+						try {
+							if (serverType == Type.PRI){
+								registry = LocateRegistry.getRegistry(Fabrique.PORT_SEC);
+								fabrique = (Fabrique) registry.lookup(Fabrique.NAME_SEC);
+							}else{
+								registry = LocateRegistry.getRegistry(Fabrique.PORT_PRI);
+								fabrique = (Fabrique) registry.lookup(Fabrique.NAME_PRI);
+							}
+							fabrique.authClient(forumName, clientName, clientLastName, false);
+						} catch (Exception e) {
+							System.out.println("The other server is offline");
+						}
+					}
+				} else
 					gui.Print("Client already authorized!");
 			}
 			else {
@@ -159,10 +236,10 @@ public class FabriqueImpl implements Fabrique {
 			e1.printStackTrace();
 			gui.Print("There occurred a problem in the authorization.");
 		}
-	 }
-	 
-	 public void pingForum(String forumName) throws RemoteException {
-		 try {
+	}
+
+	public void pingForum(String forumName) throws RemoteException {
+		try {
 			Forum forum = getForum(forumName);
 			if (forum != null) {
 				gui.Print("-- Pinging forum "+forumName+ "--");
@@ -181,6 +258,6 @@ public class FabriqueImpl implements Fabrique {
 			e1.printStackTrace();
 			gui.Print("There occurred a problem in the ping.");
 		}
-	 }
+	}
 }
 

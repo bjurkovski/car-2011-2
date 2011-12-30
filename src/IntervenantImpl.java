@@ -17,7 +17,7 @@ import java.util.Iterator;
  * les communications distante avec le forum.
  */
 public class IntervenantImpl implements Intervenant {
-	
+
 	/**
 	 * Indique que les possibles retours de la fonction enter
 	 */
@@ -30,8 +30,8 @@ public class IntervenantImpl implements Intervenant {
 	/**
 	 * Référence distante vers un forum.
 	 */
-	private static Forum forum = null; // ref vers forum
 	private static Fabrique fabrique = null; // ref vers fabrique
+	private static String forumName = null;
 
 	/**
 	 * Identification du client dans le forum. Cet identifiant est retourné lors
@@ -47,7 +47,7 @@ public class IntervenantImpl implements Intervenant {
 	 * prenom de l'intervenant
 	 */
 	private String prenom;
-	
+
 	/**
 	 * intervenants conectées au forum
 	 */
@@ -94,12 +94,34 @@ public class IntervenantImpl implements Intervenant {
 	 * @param forum_name
 	 *            nom du forum
 	 */
-	public int enter(String forum_name) throws Exception {
-		Registry registry = LocateRegistry.getRegistry(Fabrique.PORT);
-		fabrique = (Fabrique) registry.lookup(Fabrique.NAME);
-		forum = fabrique.getForum(forum_name);
+	public int enter(String forum_name) throws Exception{
+		int returnCode = FORUMABSENT;
+		boolean addToIntervenants = false;
+		forumName = forum_name;
+
+		try {
+			returnCode = enterServer(forum_name, Fabrique.PORT_SEC, Fabrique.NAME_SEC, true);
+		} catch (Exception e) {
+			System.out.println("The Secondary server is offline");
+			addToIntervenants = true;
+		}
+
+		try {
+			returnCode = enterServer(forum_name, Fabrique.PORT_PRI, Fabrique.NAME_PRI, addToIntervenants);
+		} catch (Exception e) {
+			System.out.println("The primary server is offline");
+		}
+
+		return returnCode;
+	}
+
+	private int enterServer(String forum_name, int fabriquePort, String fabriqueName, boolean addToIntervenants) throws Exception{
+		Registry registry = LocateRegistry.getRegistry(fabriquePort);
+		fabrique = (Fabrique) registry.lookup(fabriqueName);
+
+		Forum forum = fabrique.getForum(forum_name);
 		if(forum != null){
-			if(forum.enter(this, this.prenom, this.nom)) {			
+			if(forum.enter(this, this.prenom, this.nom, addToIntervenants)) {			
 				this.intervenants = forum.getIntervenants();
 				return RETURNOK;
 			}
@@ -146,7 +168,7 @@ public class IntervenantImpl implements Intervenant {
 	public void delNewClient(Intervenant i) throws RemoteException {
 		intervenants.remove(i);
 	}
-	
+
 	public String getName() throws RemoteException {
 		return prenom;
 	}
@@ -154,11 +176,11 @@ public class IntervenantImpl implements Intervenant {
 	public String getLastName() throws RemoteException {
 		return nom;
 	}
-	
+
 	public void setId(int newId) throws RemoteException {
 		this.id = newId;
 	}
-	
+
 	public int getId() throws RemoteException {
 		return id;
 	}
@@ -169,13 +191,31 @@ public class IntervenantImpl implements Intervenant {
 	 * référence distante vers le forum et exécuter la méthode leave dessus.
 	 */
 	public void leave() throws Exception {
+		try{
+			leaveServer(Fabrique.PORT_PRI, Fabrique.NAME_PRI);
+		} catch (Exception e){
+			System.out.println("The Primary server is offline");
+		}
+
+		try{
+			leaveServer(Fabrique.PORT_SEC, Fabrique.NAME_SEC);
+		} catch (Exception e){
+			System.out.println("The Secondary server is offline");
+		}
+		
+		id = 0;
+		intervenants.clear();
+	}
+	
+	private void leaveServer(int fabriquePort, String fabriqueName) throws Exception {
+		Registry registry = LocateRegistry.getRegistry(fabriquePort);
+		fabrique = (Fabrique) registry.lookup(fabriqueName);
+		
+		Forum forum = fabrique.getForum(forumName);
 		if(forum != null){
 			forum.leave(this.id); 
 			forum = null;
-			id = 0;
 		}
-
-		intervenants.clear();
 	}
 
 	/**
@@ -184,14 +224,36 @@ public class IntervenantImpl implements Intervenant {
 	 * référence distante vers le forum et exécuter la methode who dessus.
 	 */
 	public String who() throws Exception {
+		Forum forum = null;
+		try{
+			forum = whoServer(Fabrique.PORT_PRI, Fabrique.NAME_PRI);
+		}catch (Exception e) {
+			System.out.println("The Primary server is offline");
+		}
+		
+		if (forum != null)
+			return forum.who();
+		
+		try{
+			forum = whoServer(Fabrique.PORT_SEC, Fabrique.NAME_SEC);
+		}catch (Exception e) {
+			System.out.println("The Secondary server is offline");
+		}
+		
 		if(forum != null)
 			return forum.who();
 		else
 			return "";
 	}
 	
+	private Forum whoServer(int fabriquePort, String fabriqueName) throws Exception{
+		Registry registry = LocateRegistry.getRegistry(fabriquePort);
+		fabrique = (Fabrique) registry.lookup(fabriqueName);
+		
+		return fabrique.getForum(forumName);
+	}
+
 	public void clearForumInformation() throws Exception {
-		forum = null;
 		intervenants.clear();
 		gui.showDisconnectedInterface();
 	}
